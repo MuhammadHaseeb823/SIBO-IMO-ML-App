@@ -65,22 +65,23 @@ with st.form("diagnosis_form"):
     predict_clicked = st.form_submit_button("🧬 Predict Diagnosis", use_container_width=True)
 
 if predict_clicked:
-    diagnosis, probabilities, input_df = predict_diagnosis(
-        age, baseline_h2, baseline_ch4, peak_h2, peak_ch4,
-        combined_peak, time_of_peak, increase_from_baseline
-    )
+    with st.spinner("🔄 Processing patient data and running AI model..."):
+        diagnosis, probabilities, input_df = predict_diagnosis(
+            age, baseline_h2, baseline_ch4, peak_h2, peak_ch4,
+            combined_peak, time_of_peak, increase_from_baseline
+        )
 
-    input_values = {
-        'Age': age,
-        'Baseline H₂ (ppm)': baseline_h2,
-        'Baseline CH₄ (ppm)': baseline_ch4,
-        'Peak H₂ (ppm)': peak_h2,
-        'Peak CH₄ (ppm)': peak_ch4,
-        'Combined Peak (ppm)': combined_peak,
-        'Time of Peak (minutes)': time_of_peak,
-        'Increase from Baseline (ppm)': increase_from_baseline,
-    }
-    store_patient_in_session("Patient", gender, input_values, diagnosis, probabilities)
+        input_values = {
+            'Age': age,
+            'Baseline H₂ (ppm)': baseline_h2,
+            'Baseline CH₄ (ppm)': baseline_ch4,
+            'Peak H₂ (ppm)': peak_h2,
+            'Peak CH₄ (ppm)': peak_ch4,
+            'Combined Peak (ppm)': combined_peak,
+            'Time of Peak (minutes)': time_of_peak,
+            'Increase from Baseline (ppm)': increase_from_baseline,
+        }
+        store_patient_in_session("Patient", gender, input_values, diagnosis, probabilities)
 
     section_divider()
 
