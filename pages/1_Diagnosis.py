@@ -28,42 +28,41 @@ st.markdown('''
 
 section_divider()
 
-# ===== PATIENT INFO =====
-st.markdown('<div class="gradient-text gradient-text-md">📋 Patient Information</div>', unsafe_allow_html=True)
-st.markdown("")
+with st.form("diagnosis_form"):
+    # ===== PATIENT INFO =====
+    st.markdown('<div class="gradient-text gradient-text-md">📋 Patient Information</div>', unsafe_allow_html=True)
+    st.markdown("")
 
-col_info1, col_info2 = st.columns(2)
-with col_info1:
-    age = st.number_input("Age", min_value=0, max_value=120, value=30, step=1)
-with col_info2:
-    gender = st.selectbox("Gender", options=["Male", "Female"])
+    col_info1, col_info2 = st.columns(2)
+    with col_info1:
+        age = st.number_input("Age", min_value=0, max_value=120, value=30, step=1)
+    with col_info2:
+        gender = st.selectbox("Gender", options=["Male", "Female"])
 
-section_divider()
+    section_divider()
 
-# ===== BREATH TEST INPUTS =====
-st.markdown('<div class="gradient-text gradient-text-md">🫁 Breath Test Values</div>', unsafe_allow_html=True)
-st.markdown("")
+    # ===== BREATH TEST INPUTS =====
+    st.markdown('<div class="gradient-text gradient-text-md">🫁 Breath Test Values</div>', unsafe_allow_html=True)
+    st.markdown("")
 
-col1, col2 = st.columns(2)
+    col1, col2 = st.columns(2)
 
-with col1:
-    baseline_h2 = st.number_input("Baseline H₂ (ppm)", min_value=0.0, value=5.0, step=0.1)
-    baseline_ch4 = st.number_input("Baseline CH₄ (ppm)", min_value=0.0, value=2.0, step=0.1)
-    combined_peak = st.number_input("Combined Peak (ppm)", min_value=0.0, value=95.0, step=0.1)
+    with col1:
+        baseline_h2 = st.number_input("Baseline H₂ (ppm)", min_value=0.0, value=5.0, step=0.1)
+        baseline_ch4 = st.number_input("Baseline CH₄ (ppm)", min_value=0.0, value=2.0, step=0.1)
+        combined_peak = st.number_input("Combined Peak (ppm)", min_value=0.0, value=95.0, step=0.1)
 
-with col2:
-    peak_h2 = st.number_input("Peak H₂ (ppm)", min_value=0.0, value=74.0, step=0.1)
-    peak_ch4 = st.number_input("Peak CH₄ (ppm)", min_value=0.0, value=21.0, step=0.1)
-    time_of_peak = st.number_input("Time of Peak (minutes)", min_value=0.0, value=100.0, step=1.0)
+    with col2:
+        peak_h2 = st.number_input("Peak H₂ (ppm)", min_value=0.0, value=74.0, step=0.1)
+        peak_ch4 = st.number_input("Peak CH₄ (ppm)", min_value=0.0, value=21.0, step=0.1)
+        time_of_peak = st.number_input("Time of Peak (minutes)", min_value=0.0, value=100.0, step=1.0)
 
-increase_from_baseline = st.number_input("Increase from Baseline (ppm)", min_value=0.0, value=90.0, step=0.1)
+    increase_from_baseline = st.number_input("Increase from Baseline (ppm)", min_value=0.0, value=90.0, step=0.1)
 
-section_divider()
+    section_divider()
 
-# ===== PREDICT BUTTON =====
-col_btn1, col_btn2, col_btn3 = st.columns([1, 2, 1])
-with col_btn2:
-    predict_clicked = st.button("🧬 Predict Diagnosis", use_container_width=True)
+    # ===== PREDICT BUTTON =====
+    predict_clicked = st.form_submit_button("🧬 Predict Diagnosis", use_container_width=True)
 
 if predict_clicked:
     diagnosis, probabilities, input_df = predict_diagnosis(
