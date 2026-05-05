@@ -38,7 +38,6 @@ patient = st.session_state.current_patient
 diagnosis = patient['diagnosis']
 probabilities = patient['probabilities']
 inputs = patient['inputs']
-name = patient.get('name', 'N/A')
 gender = patient.get('gender', 'N/A')
 
 # ===== REPORT PREVIEW =====
@@ -50,7 +49,6 @@ st.markdown(f'''
 <div class="glass-card">
     <div style="font-size:18px; font-weight:700; color:#f1f5f9; margin-bottom:12px;">Patient Information</div>
     <div style="display:flex; gap:40px; color:#94a3b8;">
-        <span><strong>Name:</strong> {name}</span>
         <span><strong>Age:</strong> {inputs.get("Age", "N/A")}</span>
         <span><strong>Gender:</strong> {gender}</span>
         <span><strong>Date:</strong> {datetime.datetime.now().strftime("%B %d, %Y")}</span>
@@ -108,7 +106,7 @@ col_dl1, col_dl2, col_dl3 = st.columns([1, 2, 1])
 with col_dl2:
     try:
         pdf_bytes = generate_pdf_report(patient)
-        filename = f"SIBO_IMO_Report_{name.replace(' ', '_')}_{datetime.datetime.now().strftime('%Y%m%d')}.pdf"
+        filename = f"SIBO_IMO_Report_{datetime.datetime.now().strftime('%Y%m%d')}.pdf"
         st.download_button(
             label="📥 Download PDF Report",
             data=pdf_bytes,

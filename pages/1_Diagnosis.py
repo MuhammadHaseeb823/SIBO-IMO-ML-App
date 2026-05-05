@@ -7,19 +7,14 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils.styles import inject_custom_css, section_divider, get_diagnosis_badge, confidence_bar
 from utils.disclaimer import show_disclaimer
 from utils.model_utils import (
-    predict_diagnosis, store_patient_in_session,
-    add_patient_to_comparison, DIAGNOSIS_COLORS,
+    predict_diagnosis, store_patient_in_session, DIAGNOSIS_COLORS,
 )
 
 st.set_page_config(page_title="Diagnosis | SIBO & IMO AI", layout="wide", initial_sidebar_state="expanded")
 inject_custom_css()
 
-# ===== SIDEBAR =====
 with st.sidebar:
     st.markdown("### 🧬 SIBO & IMO AI")
-    st.markdown("---")
-    st.markdown("**Navigation**")
-    st.caption("Use the sidebar to switch between pages.")
     st.markdown("---")
     show_disclaimer()
 
@@ -37,12 +32,10 @@ section_divider()
 st.markdown('<div class="gradient-text gradient-text-md">📋 Patient Information</div>', unsafe_allow_html=True)
 st.markdown("")
 
-col_info1, col_info2, col_info3 = st.columns(3)
+col_info1, col_info2 = st.columns(2)
 with col_info1:
-    patient_name = st.text_input("Patient Name", value="", placeholder="Enter patient name")
-with col_info2:
     age = st.number_input("Age", min_value=0, max_value=120, value=30, step=1)
-with col_info3:
+with col_info2:
     gender = st.selectbox("Gender", options=["Male", "Female"])
 
 section_divider()
@@ -79,7 +72,6 @@ if predict_clicked:
             combined_peak, time_of_peak, increase_from_baseline
         )
 
-    # Store in session for other pages
     input_values = {
         'Age': age,
         'Baseline H₂ (ppm)': baseline_h2,
@@ -90,7 +82,7 @@ if predict_clicked:
         'Time of Peak (minutes)': time_of_peak,
         'Increase from Baseline (ppm)': increase_from_baseline,
     }
-    store_patient_in_session(patient_name, gender, input_values, diagnosis, probabilities)
+    store_patient_in_session("Patient", gender, input_values, diagnosis, probabilities)
 
     section_divider()
 
@@ -98,16 +90,15 @@ if predict_clicked:
     st.markdown('<div class="gradient-text gradient-text-md">📊 Prediction Results</div>', unsafe_allow_html=True)
     st.markdown("")
 
-    # Diagnosis badge
     badge_html = get_diagnosis_badge(diagnosis)
     st.markdown(f'''
     <div class="glass-card animate-in" style="text-align:center; padding:30px;">
-        <div style="font-size:14px; color:#94a3b8; margin-bottom:12px; text-transform:uppercase; letter-spacing:1px;">
+        <div style="font-size:15px; color:#9ca3af !important; margin-bottom:12px; text-transform:uppercase; letter-spacing:1px;">
             Predicted Diagnosis
         </div>
         <div style="margin:16px 0;">{badge_html}</div>
-        <div style="font-size:13px; color:#64748b; margin-top:12px;">
-            Patient: {patient_name or "Not specified"} | Age: {age} | Gender: {gender}
+        <div style="font-size:14px; color:#9ca3af !important; margin-top:12px;">
+            Age: {age} | Gender: {gender}
         </div>
     </div>
     ''', unsafe_allow_html=True)
@@ -122,26 +113,17 @@ if predict_clicked:
 
     st.markdown("")
 
-    # Quick summary
     max_class = max(probabilities, key=probabilities.get)
     max_pct = probabilities[max_class]
     st.markdown(f'''
     <div class="glass-card">
-        <div style="font-size:14px; color:#94a3b8;">Quick Summary</div>
-        <div style="margin-top:8px; font-size:15px;">
+        <div style="font-size:16px; line-height:1.7;">
             The model predicts <strong>{diagnosis}</strong> with <strong>{max_pct:.1f}%</strong> confidence.
             Navigate to <strong>AI Insights</strong> for a detailed clinical interpretation,
             or <strong>Report Export</strong> to download a PDF report.
         </div>
     </div>
     ''', unsafe_allow_html=True)
-
-    # Option to add to comparison
-    st.markdown("")
-    if st.button("➕ Add this patient to Comparison List"):
-        add_patient_to_comparison(st.session_state.current_patient.copy())
-        count = len(st.session_state.patients_list)
-        st.success(f"✅ Patient added! ({count} patient(s) in comparison list)")
 
 section_divider()
 show_disclaimer()

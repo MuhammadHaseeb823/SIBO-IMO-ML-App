@@ -68,11 +68,9 @@ def generate_pdf_report(patient_data):
 
     pdf.set_font('Helvetica', '', 11)
     pdf.set_text_color(50, 50, 50)
-    name = patient_data.get('name', 'N/A')
     gender = patient_data.get('gender', 'N/A')
     age = patient_data.get('inputs', {}).get('Age', 'N/A')
 
-    pdf.cell(60, 8, f'Name: {name}')
     pdf.cell(60, 8, f'Gender: {gender}')
     pdf.cell(60, 8, f'Age: {age}', new_x="LMARGIN", new_y="NEXT")
     pdf.ln(6)

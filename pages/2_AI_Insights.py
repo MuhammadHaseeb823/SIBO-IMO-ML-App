@@ -50,7 +50,7 @@ st.markdown(f'''
     <span style="color:#94a3b8; font-size:13px;">Current Prediction</span>
     <div style="margin:8px 0;">{badge_html}</div>
     <span style="color:#64748b; font-size:12px;">
-        Patient: {patient.get("name", "N/A")} | Age: {inputs.get("Age", "N/A")} | Gender: {patient.get("gender", "N/A")}
+        Age: {inputs.get("Age", "N/A")} | Gender: {patient.get("gender", "N/A")}
     </span>
 </div>
 ''', unsafe_allow_html=True)
