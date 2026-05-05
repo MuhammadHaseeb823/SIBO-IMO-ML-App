@@ -66,11 +66,10 @@ with col_btn2:
     predict_clicked = st.button("🧬 Predict Diagnosis", use_container_width=True)
 
 if predict_clicked:
-    with st.spinner("🔄 Analysing breath test data..."):
-        diagnosis, probabilities, input_df = predict_diagnosis(
-            age, baseline_h2, baseline_ch4, peak_h2, peak_ch4,
-            combined_peak, time_of_peak, increase_from_baseline
-        )
+    diagnosis, probabilities, input_df = predict_diagnosis(
+        age, baseline_h2, baseline_ch4, peak_h2, peak_ch4,
+        combined_peak, time_of_peak, increase_from_baseline
+    )
 
     input_values = {
         'Age': age,
