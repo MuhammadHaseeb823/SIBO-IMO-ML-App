@@ -1,68 +1,206 @@
 import streamlit as st
-import pandas as pd
-import joblib
 
-# Load the saved model, scaler, and label encoder
-model = joblib.load('final_diagnosis_model.pkl')       # Classifier model
-scaler = joblib.load('scaler.pkl')                     # Scaler for normalization
-label_encoder = joblib.load('label_encoder.pkl')       # Label encoder for target
+# ===== PAGE CONFIG =====
+st.set_page_config(
+    page_title="SIBO & IMO Clinical AI System",
+    page_icon="🧬",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
-# Streamlit app title
-st.title('SIBO & IMO Prediction App')
+from utils.styles import inject_custom_css, section_divider, metric_card
+from utils.disclaimer import show_disclaimer
 
-# Input fields for user to provide feature values
-age = st.number_input('Age', min_value=0, max_value=120, value=30, step=1)
-gender = st.selectbox('Gender', options=['M', 'F'])
-baseline_h2 = st.number_input('Baseline H₂ (ppm)', min_value=0.0, value=5.0, step=0.1)
-baseline_ch4 = st.number_input('Baseline CH₄ (ppm)', min_value=0.0, value=2.0, step=0.1)
-peak_h2 = st.number_input('Peak H₂ (ppm)', min_value=0.0, value=74.0, step=0.1)
-peak_ch4 = st.number_input('Peak CH₄ (ppm)', min_value=0.0, value=21.0, step=0.1)
-combined_peak = st.number_input('Combined Peak (ppm)', min_value=0.0, value=95.0, step=0.1)
-time_of_peak = st.number_input('Time of Peak (minutes)', min_value=0.0, value=100.0, step=0.1)
-increase_from_baseline = st.number_input('Increase from Baseline (ppm)', min_value=0.0, value=90.0, step=0.1)
+inject_custom_css()
 
-# Prediction button
-if st.button('Predict Final Diagnosis'):
-    # Create a DataFrame with the input data
-    input_data = pd.DataFrame({
-        'Age': [age],
-        'Baseline H₂ (ppm)': [baseline_h2],
-        'Baseline CH₄ (ppm)': [baseline_ch4],
-        'Peak H₂ (ppm)': [peak_h2],
-        'Peak CH₄ (ppm)': [peak_ch4],
-        'Combined Peak (ppm)': [combined_peak],
-        'Time of Peak (minutes)': [time_of_peak],
-        'Increase from Baseline (ppm)': [increase_from_baseline],
-    })
-    
-    # One-hot encode the 'Gender' column
-    # input_data = pd.get_dummies(input_data, columns=['Gender'], drop_first=True)
-    
-    # Add additional categorical variables here if necessary
-    # For example: Combined Diagnosis, IMO, SIBO
+# ===== SIDEBAR =====
+with st.sidebar:
+    st.markdown("### 🧬 SIBO & IMO AI")
+    st.markdown("---")
+    st.markdown("**Pages**")
+    st.markdown("""
+    - 🔬 Diagnosis
+    - 📊 AI Insights
+    - 👥 Patient Comparison
+    - 📄 Report Export
+    - 📖 How It Works
+    """)
+    st.markdown("---")
+    show_disclaimer()
 
-    # # Ensure all expected features are present
-    # # Get the feature names that the model was trained on
-    # trained_features = model.feature_names_in_
+# ===== HERO =====
+st.markdown('''
+<div class="hero-section animate-in">
+    <div style="font-size:48px; margin-bottom:8px;">🧬</div>
+    <div class="gradient-text gradient-text-lg">SIBO & IMO Clinical AI System</div>
+    <div class="hero-subtitle">
+        Machine Learning Powered Breath Test Diagnostic Tool
+    </div>
+</div>
+''', unsafe_allow_html=True)
 
-    # # Add missing columns with default value of 0
-    # for feature in trained_features:
-    #     if feature not in input_data.columns:
-    #         input_data[feature] = 0
+section_divider()
 
-    # # Reorder the input data to match the trained feature order
-    # input_data = input_data[trained_features]
+# ===== STATS ROW =====
+sc1, sc2, sc3, sc4 = st.columns(4)
+with sc1:
+    metric_card("96.12%", "Model Accuracy")
+with sc2:
+    metric_card("511", "Patients Trained On")
+with sc3:
+    metric_card("4", "Diagnosis Classes")
+with sc4:
+    metric_card("8", "Input Features")
 
-    # Standardize the input data using the saved scaler
-    scaled_data = scaler.transform(input_data)
-    # input_data['Gender_M'] = [1 if gender == 'M' else 0]  # Create Gender_M column
-    print(input_data.columns)
+section_divider()
 
-    # Make predictions using the loaded model
-    prediction = model.predict(scaled_data)
+# ===== FEATURE CARDS =====
+st.markdown('<div class="gradient-text gradient-text-md">🚀 System Features</div>', unsafe_allow_html=True)
+st.markdown("")
 
-    # Decode the prediction
-    final_diagnosis = label_encoder.inverse_transform(prediction)
+fc1, fc2, fc3 = st.columns(3)
 
-    # Display the prediction
-    st.write(f'The predicted final diagnosis is: **{final_diagnosis[0]}**')
+with fc1:
+    st.markdown('''
+    <div class="glass-card" style="min-height:200px;">
+        <div style="font-size:28px; margin-bottom:8px;">🔬</div>
+        <div style="font-size:18px; font-weight:700; color:#f1f5f9; margin-bottom:8px;">AI Diagnosis</div>
+        <div style="font-size:14px; color:#94a3b8; line-height:1.6;">
+            Enter patient breath test values and receive an instant AI-powered diagnosis with
+            confidence scores for SIBO, IMO, combined, or no diagnosis.
+        </div>
+    </div>
+    ''', unsafe_allow_html=True)
+
+with fc2:
+    st.markdown('''
+    <div class="glass-card" style="min-height:200px;">
+        <div style="font-size:28px; margin-bottom:8px;">📊</div>
+        <div style="font-size:18px; font-weight:700; color:#f1f5f9; margin-bottom:8px;">AI Insights</div>
+        <div style="font-size:14px; color:#94a3b8; line-height:1.6;">
+            Explore feature importance charts, patient risk profiles, clinical interpretations,
+            and reference ranges to understand the prediction.
+        </div>
+    </div>
+    ''', unsafe_allow_html=True)
+
+with fc3:
+    st.markdown('''
+    <div class="glass-card" style="min-height:200px;">
+        <div style="font-size:28px; margin-bottom:8px;">👥</div>
+        <div style="font-size:18px; font-weight:700; color:#f1f5f9; margin-bottom:8px;">Patient Comparison</div>
+        <div style="font-size:14px; color:#94a3b8; line-height:1.6;">
+            Compare multiple patients side-by-side with interactive charts, diagnosis matrices,
+            and detailed gas level breakdowns.
+        </div>
+    </div>
+    ''', unsafe_allow_html=True)
+
+fc4, fc5, fc6 = st.columns(3)
+
+with fc4:
+    st.markdown('''
+    <div class="glass-card" style="min-height:200px;">
+        <div style="font-size:28px; margin-bottom:8px;">📄</div>
+        <div style="font-size:18px; font-weight:700; color:#f1f5f9; margin-bottom:8px;">PDF Reports</div>
+        <div style="font-size:14px; color:#94a3b8; line-height:1.6;">
+            Generate and download professional PDF diagnostic reports with patient demographics,
+            test values, predictions, and confidence breakdowns.
+        </div>
+    </div>
+    ''', unsafe_allow_html=True)
+
+with fc5:
+    st.markdown('''
+    <div class="glass-card" style="min-height:200px;">
+        <div style="font-size:28px; margin-bottom:8px;">📖</div>
+        <div style="font-size:18px; font-weight:700; color:#f1f5f9; margin-bottom:8px;">Educational Content</div>
+        <div style="font-size:14px; color:#94a3b8; line-height:1.6;">
+            Learn about SIBO, IMO, breath testing methodology, and how the Random Forest
+            machine learning model makes predictions.
+        </div>
+    </div>
+    ''', unsafe_allow_html=True)
+
+with fc6:
+    st.markdown('''
+    <div class="glass-card" style="min-height:200px;">
+        <div style="font-size:28px; margin-bottom:8px;">⚡</div>
+        <div style="font-size:18px; font-weight:700; color:#f1f5f9; margin-bottom:8px;">High Performance</div>
+        <div style="font-size:14px; color:#94a3b8; line-height:1.6;">
+            Cached model loading for instant predictions, interactive Plotly charts,
+            and a responsive design optimised for clinical workflows.
+        </div>
+    </div>
+    ''', unsafe_allow_html=True)
+
+section_divider()
+
+# ===== QUICK START =====
+st.markdown('<div class="gradient-text gradient-text-md">⚡ Quick Start</div>', unsafe_allow_html=True)
+st.markdown("")
+
+st.markdown('''
+<div class="glass-card">
+    <div style="font-size:15px; color:#94a3b8; line-height:2;">
+        <strong style="color:#38bdf8;">Step 1:</strong> Navigate to <strong>🔬 Diagnosis</strong> from the sidebar<br>
+        <strong style="color:#38bdf8;">Step 2:</strong> Enter patient demographics and breath test values<br>
+        <strong style="color:#38bdf8;">Step 3:</strong> Click <strong>Predict</strong> to get an AI-powered diagnosis<br>
+        <strong style="color:#38bdf8;">Step 4:</strong> Explore <strong>📊 AI Insights</strong> for detailed analysis<br>
+        <strong style="color:#38bdf8;">Step 5:</strong> Download a <strong>📄 PDF Report</strong> for documentation
+    </div>
+</div>
+''', unsafe_allow_html=True)
+
+section_divider()
+
+# ===== DIAGNOSIS CLASSES =====
+st.markdown('<div class="gradient-text gradient-text-md">🎯 Diagnostic Classes</div>', unsafe_allow_html=True)
+st.markdown("")
+
+dc1, dc2, dc3, dc4 = st.columns(4)
+
+with dc1:
+    st.markdown('''
+    <div class="metric-card" style="border-left: 3px solid #38bdf8;">
+        <div style="font-size:24px; margin-bottom:4px;">🔵</div>
+        <div style="font-weight:700; color:#38bdf8;">SIBO</div>
+        <div style="font-size:12px; color:#64748b; margin-top:4px;">Hydrogen-dominant bacterial overgrowth</div>
+    </div>
+    ''', unsafe_allow_html=True)
+
+with dc2:
+    st.markdown('''
+    <div class="metric-card" style="border-left: 3px solid #f59e0b;">
+        <div style="font-size:24px; margin-bottom:4px;">🟠</div>
+        <div style="font-weight:700; color:#f59e0b;">IMO</div>
+        <div style="font-size:12px; color:#64748b; margin-top:4px;">Methane-producing methanogen overgrowth</div>
+    </div>
+    ''', unsafe_allow_html=True)
+
+with dc3:
+    st.markdown('''
+    <div class="metric-card" style="border-left: 3px solid #ef4444;">
+        <div style="font-size:24px; margin-bottom:4px;">🔴</div>
+        <div style="font-weight:700; color:#ef4444;">SIBO & IMO</div>
+        <div style="font-size:12px; color:#64748b; margin-top:4px;">Combined bacterial and archaeal overgrowth</div>
+    </div>
+    ''', unsafe_allow_html=True)
+
+with dc4:
+    st.markdown('''
+    <div class="metric-card" style="border-left: 3px solid #22c55e;">
+        <div style="font-size:24px; margin-bottom:4px;">🟢</div>
+        <div style="font-weight:700; color:#22c55e;">No Diagnosis</div>
+        <div style="font-size:12px; color:#64748b; margin-top:4px;">Gas levels within normal parameters</div>
+    </div>
+    ''', unsafe_allow_html=True)
+
+section_divider()
+show_disclaimer()
+
+st.markdown('''
+<div style="text-align:center; color:#475569; font-size:12px; padding:20px 0;">
+    SIBO & IMO Clinical AI System v2.0 — Built with Streamlit & scikit-learn
+</div>
+''', unsafe_allow_html=True)
