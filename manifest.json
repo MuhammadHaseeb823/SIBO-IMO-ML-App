@@ -1,0 +1,16 @@
+{
+  "name": "SIBO/IMO ML Analysis",
+  "short_name": "SIBO-AI",
+  "description": "Machine Learning app for SIBO/IMO analysis.",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4b79ff",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3062/3062323.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
